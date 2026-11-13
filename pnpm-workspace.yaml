@@ -1,0 +1,6 @@
+# Dependency build scripts are denied unless explicitly reviewed.
+# unrs-resolver, esbuild: postinstall only re-checks the native binary; the
+# prebuilt platform package is installed as an optional dependency.
+allowBuilds:
+  unrs-resolver: false
+  esbuild: false

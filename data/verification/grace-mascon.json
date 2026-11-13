@@ -1,0 +1,307 @@
+{
+  "source": "grace-fo-jpl-mascon",
+  "outcome": "implemented",
+  "checkedAt": "2026-11-06T07:43:50.412Z",
+  "granule": "GRCTellus.JPL.200204_202608.GLO.RL06.3M.MSCNv04CRI",
+  "collection": "C3195527175-POCLOUD",
+  "auth": "NASA Earthdata bearer token (not recorded)",
+  "checks": [
+    {
+      "id": "grid",
+      "passed": true,
+      "detail": "360 × 720, lat0 -89.75, lon0 0.25"
+    },
+    {
+      "id": "months",
+      "passed": true,
+      "detail": "2002-04 → 2026-08 (260)"
+    },
+    {
+      "id": "land-mascons",
+      "passed": true,
+      "detail": "1706 land mascons"
+    },
+    {
+      "id": "range",
+      "passed": true,
+      "detail": "max |anomaly| 22852 mm (ice-sheet mascons in Greenland and Antarctica exceed 20 m); limit 50 m"
+    },
+    {
+      "id": "samples",
+      "passed": true,
+      "detail": "both sample cells summarised"
+    }
+  ],
+  "trace": [
+    {
+      "name": "Rajshahi, Bangladesh (test square)",
+      "latitude": 24.62,
+      "longitude": 88.56,
+      "cell": {
+        "masconId": 1320,
+        "scale": 1.09,
+        "cellLat": 24.75,
+        "cellLon": 88.75
+      },
+      "firstValues": [
+        -120,
+        -92,
+        350
+      ],
+      "lastValues": [
+        -144,
+        58,
+        154
+      ],
+      "summary": {
+        "validMonths": 260,
+        "totalMonths": 260,
+        "firstMonth": "2002-04",
+        "lastMonth": "2026-08",
+        "latest": {
+          "month": "2026-08",
+          "mm": 168,
+          "uncertaintyMm": 152
+        },
+        "trendMmPerYear": -7.2,
+        "change": {
+          "fromYears": [
+            2003,
+            2005
+          ],
+          "toYears": [
+            2023,
+            2025
+          ],
+          "mm": -204
+        },
+        "seasonal": {
+          "lowMonth": 4,
+          "highMonth": 9,
+          "swingMm": 537
+        },
+        "years": [
+          {
+            "year": 2003,
+            "mm": 107
+          },
+          {
+            "year": 2004,
+            "mm": 70
+          },
+          {
+            "year": 2005,
+            "mm": -3
+          },
+          {
+            "year": 2006,
+            "mm": -19
+          },
+          {
+            "year": 2007,
+            "mm": 26
+          },
+          {
+            "year": 2008,
+            "mm": 14
+          },
+          {
+            "year": 2009,
+            "mm": -89
+          },
+          {
+            "year": 2010,
+            "mm": -132
+          },
+          {
+            "year": 2011,
+            "mm": -99
+          },
+          {
+            "year": 2012,
+            "mm": -150
+          },
+          {
+            "year": 2013,
+            "mm": -151
+          },
+          {
+            "year": 2014,
+            "mm": -134
+          },
+          {
+            "year": 2015,
+            "mm": -79
+          },
+          {
+            "year": 2016,
+            "mm": -158
+          },
+          {
+            "year": 2019,
+            "mm": -146
+          },
+          {
+            "year": 2020,
+            "mm": -29
+          },
+          {
+            "year": 2021,
+            "mm": -64
+          },
+          {
+            "year": 2022,
+            "mm": -96
+          },
+          {
+            "year": 2023,
+            "mm": -212
+          },
+          {
+            "year": 2024,
+            "mm": -147
+          },
+          {
+            "year": 2025,
+            "mm": -80
+          }
+        ]
+      }
+    },
+    {
+      "name": "Near Ames, Iowa, USA (test point)",
+      "latitude": 42.03,
+      "longitude": -93.62,
+      "cell": {
+        "masconId": 771,
+        "scale": 0.957,
+        "cellLat": 42.25,
+        "cellLon": -93.75
+      },
+      "firstValues": [
+        56,
+        117,
+        -38
+      ],
+      "lastValues": [
+        -87,
+        -120,
+        -142
+      ],
+      "summary": {
+        "validMonths": 260,
+        "totalMonths": 260,
+        "firstMonth": "2002-04",
+        "lastMonth": "2026-08",
+        "latest": {
+          "month": "2026-08",
+          "mm": -136,
+          "uncertaintyMm": 74
+        },
+        "trendMmPerYear": -2.5,
+        "change": {
+          "fromYears": [
+            2003,
+            2005
+          ],
+          "toYears": [
+            2023,
+            2025
+          ],
+          "mm": -60
+        },
+        "seasonal": {
+          "lowMonth": 9,
+          "highMonth": 5,
+          "swingMm": 125
+        },
+        "years": [
+          {
+            "year": 2003,
+            "mm": -49
+          },
+          {
+            "year": 2004,
+            "mm": -33
+          },
+          {
+            "year": 2005,
+            "mm": -38
+          },
+          {
+            "year": 2006,
+            "mm": -60
+          },
+          {
+            "year": 2007,
+            "mm": 6
+          },
+          {
+            "year": 2008,
+            "mm": 57
+          },
+          {
+            "year": 2009,
+            "mm": 67
+          },
+          {
+            "year": 2010,
+            "mm": 139
+          },
+          {
+            "year": 2011,
+            "mm": 95
+          },
+          {
+            "year": 2012,
+            "mm": -43
+          },
+          {
+            "year": 2013,
+            "mm": -66
+          },
+          {
+            "year": 2014,
+            "mm": -61
+          },
+          {
+            "year": 2015,
+            "mm": -25
+          },
+          {
+            "year": 2016,
+            "mm": 48
+          },
+          {
+            "year": 2019,
+            "mm": 149
+          },
+          {
+            "year": 2020,
+            "mm": 84
+          },
+          {
+            "year": 2021,
+            "mm": 6
+          },
+          {
+            "year": 2022,
+            "mm": -84
+          },
+          {
+            "year": 2023,
+            "mm": -130
+          },
+          {
+            "year": 2024,
+            "mm": -74
+          },
+          {
+            "year": 2025,
+            "mm": -95
+          }
+        ]
+      }
+    }
+  ]
+}

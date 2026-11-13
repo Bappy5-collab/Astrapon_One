@@ -1,0 +1,253 @@
+{
+  "artifact": "LIVE VERIFICATION RECORD — produced by scripts/verify-sources.mts. Not a fixture and not an input to the product.",
+  "sourceId": "isric-soilgrids",
+  "generatedAt": "2026-11-06T07:30:00.284Z",
+  "site": {
+    "name": "Near Ames, Iowa, USA (test point)",
+    "latitude": 42.03,
+    "longitude": -93.62
+  },
+  "outcome": "live_verified",
+  "officialStatus": "ISRIC paused the REST service in October 2026 (https://www.isric.org/explore/soilgrids); it answered again on 2026-11-06.",
+  "request": {
+    "url": "https://rest.isric.org/soilgrids/v2.0/properties/query?lon=88.56&lat=24.62&property=wv0033&property=wv1500&depth=0-5cm&depth=5-15cm&depth=15-30cm&depth=30-60cm&depth=60-100cm&value=Q0.05&value=Q0.5&value=Q0.95&value=mean"
+  },
+  "response": {
+    "url": "https://rest.isric.org/soilgrids/v2.0/properties/query?lon=88.56&lat=24.62&property=wv0033&property=wv1500&depth=0-5cm&depth=5-15cm&depth=15-30cm&depth=30-60cm&depth=60-100cm&value=Q0.05&value=Q0.5&value=Q0.95&value=mean",
+    "retrievedAt": "2026-11-06T07:29:41.301Z",
+    "status": 200,
+    "durationMs": 18969,
+    "contentType": "application/json",
+    "bodySha256": "9c525221646964c0baca841bfef7de385fb4ce258540511f4d01617316b25e7b",
+    "bodyBytes": 1803
+  },
+  "checks": [
+    {
+      "id": "wv0033:d_factor",
+      "passed": true,
+      "detail": "response d_factor 10, documented 10"
+    },
+    {
+      "id": "wv1500:d_factor",
+      "passed": true,
+      "detail": "response d_factor 10, documented 10"
+    },
+    {
+      "id": "has-values",
+      "passed": true,
+      "detail": "10/10 property-depth cells have a value"
+    },
+    {
+      "id": "texture-range",
+      "passed": true,
+      "detail": "texture % within 0–100"
+    }
+  ],
+  "point": {
+    "name": "Rajshahi, Bangladesh (test square)",
+    "latitude": 24.62,
+    "longitude": 88.56
+  },
+  "awcMm0to100": 93,
+  "trace": {
+    "point": "24.62, 88.56",
+    "layers": [
+      {
+        "depth": "0-5cm",
+        "fc": 33,
+        "wp": 21.9,
+        "mm": 5.550000000000001
+      },
+      {
+        "depth": "5-15cm",
+        "fc": 32.6,
+        "wp": 22.3,
+        "mm": 10.3
+      },
+      {
+        "depth": "15-30cm",
+        "fc": 32.8,
+        "wp": 23.1,
+        "mm": 14.549999999999994
+      },
+      {
+        "depth": "30-60cm",
+        "fc": 32.9,
+        "wp": 23.9,
+        "mm": 26.999999999999996
+      },
+      {
+        "depth": "60-100cm",
+        "fc": 33,
+        "wp": 24.2,
+        "mm": 35.2
+      }
+    ],
+    "awcMm0to100": 93,
+    "rule": "Σ (wv0033 − wv1500)/100 × thickness, layer means, 0–100 cm"
+  },
+  "excerpt": [
+    {
+      "name": "wv0033",
+      "unit_measure": {
+        "d_factor": 10,
+        "mapped_units": "(10-2 cm³/cm³)*10",
+        "target_units": "10-2 cm³/cm³",
+        "uncertainty_unit": ""
+      },
+      "depths": [
+        {
+          "range": {
+            "top_depth": 0,
+            "bottom_depth": 5,
+            "unit_depth": "cm"
+          },
+          "label": "0-5cm",
+          "values": {
+            "Q0.05": 155,
+            "Q0.5": 333,
+            "Q0.95": 504,
+            "mean": 330
+          }
+        },
+        {
+          "range": {
+            "top_depth": 5,
+            "bottom_depth": 15,
+            "unit_depth": "cm"
+          },
+          "label": "5-15cm",
+          "values": {
+            "Q0.05": 141,
+            "Q0.5": 332,
+            "Q0.95": 465,
+            "mean": 326
+          }
+        },
+        {
+          "range": {
+            "top_depth": 15,
+            "bottom_depth": 30,
+            "unit_depth": "cm"
+          },
+          "label": "15-30cm",
+          "values": {
+            "Q0.05": 141,
+            "Q0.5": 332,
+            "Q0.95": 474,
+            "mean": 328
+          }
+        },
+        {
+          "range": {
+            "top_depth": 30,
+            "bottom_depth": 60,
+            "unit_depth": "cm"
+          },
+          "label": "30-60cm",
+          "values": {
+            "Q0.05": 170,
+            "Q0.5": 333,
+            "Q0.95": 437,
+            "mean": 329
+          }
+        },
+        {
+          "range": {
+            "top_depth": 60,
+            "bottom_depth": 100,
+            "unit_depth": "cm"
+          },
+          "label": "60-100cm",
+          "values": {
+            "Q0.05": 138,
+            "Q0.5": 340,
+            "Q0.95": 439,
+            "mean": 330
+          }
+        }
+      ]
+    },
+    {
+      "name": "wv1500",
+      "unit_measure": {
+        "d_factor": 10,
+        "mapped_units": "(10-2 cm³/cm³)*10",
+        "target_units": "10-2 cm³/cm³",
+        "uncertainty_unit": ""
+      },
+      "depths": [
+        {
+          "range": {
+            "top_depth": 0,
+            "bottom_depth": 5,
+            "unit_depth": "cm"
+          },
+          "label": "0-5cm",
+          "values": {
+            "Q0.05": 64,
+            "Q0.5": 207,
+            "Q0.95": 364,
+            "mean": 219
+          }
+        },
+        {
+          "range": {
+            "top_depth": 5,
+            "bottom_depth": 15,
+            "unit_depth": "cm"
+          },
+          "label": "5-15cm",
+          "values": {
+            "Q0.05": 70,
+            "Q0.5": 219,
+            "Q0.95": 364,
+            "mean": 223
+          }
+        },
+        {
+          "range": {
+            "top_depth": 15,
+            "bottom_depth": 30,
+            "unit_depth": "cm"
+          },
+          "label": "15-30cm",
+          "values": {
+            "Q0.05": 70,
+            "Q0.5": 226,
+            "Q0.95": 364,
+            "mean": 231
+          }
+        },
+        {
+          "range": {
+            "top_depth": 30,
+            "bottom_depth": 60,
+            "unit_depth": "cm"
+          },
+          "label": "30-60cm",
+          "values": {
+            "Q0.05": 71,
+            "Q0.5": 240,
+            "Q0.95": 371,
+            "mean": 239
+          }
+        },
+        {
+          "range": {
+            "top_depth": 60,
+            "bottom_depth": 100,
+            "unit_depth": "cm"
+          },
+          "label": "60-100cm",
+          "values": {
+            "Q0.05": 70,
+            "Q0.5": 262,
+            "Q0.95": 370,
+            "mean": 242
+          }
+        }
+      ]
+    }
+  ]
+}

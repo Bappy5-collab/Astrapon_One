@@ -1,0 +1,316 @@
+"use client";
+
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import Alert from "@mui/material/Alert";
+import Autocomplete from "@mui/material/Autocomplete";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import Link from "@mui/material/Link";
+import MenuItem from "@mui/material/MenuItem";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useState } from "react";
+
+import { COMMON_CROPS, CROP_FORM_COLORS, cropForm } from "@/domain/farm/crops";
+import { SEASONS, ZONE_BASES, ZONE_BASIS_LABELS } from "@/domain/farm/records";
+import { cropYears, type Season } from "@/domain/workspace/workspace";
+import { FIELD_KEY } from "@/components/field3d/model";
+import { useT } from "@/lib/i18n/I18nProvider";
+import type { MessageKey } from "@/lib/i18n/messages";
+import { fmt } from "@/lib/i18n/sim-messages";
+import { color, numeric, radius, tokens } from "@/theme/tokens";
+
+import type { WorkspaceState } from "./useWorkspace";
+
+
+export function RegionList({ ws, areaHa }: { ws: WorkspaceState; areaHa: number | null }) {
+  const t = useT();
+  const regions = [{ key: FIELD_KEY, name: t("ws.wholeField"), areaHa, saved: true }, ...ws.zones.map((z) => ({ key: z.key, name: z.name, areaHa: z.areaHa, saved: z.saved }))];
+  const selected = ws.selectedKey ?? FIELD_KEY;
+  return (
+    <Box role="radiogroup" aria-label={t("ws.selectZone")} sx={{ display: "grid", gap: 0.75 }}>
+      {regions.map((r) => {
+        const crop = ws.cropFor(r.key === FIELD_KEY ? null : r.key, ws.year);
+        const last = crop ? null : cropYears(ws.history, ws.crops, r.key === FIELD_KEY ? null : r.key)[0];
+        const on = selected === r.key;
+        const swatch = crop ? CROP_FORM_COLORS[cropForm(crop.cropName)].plant : tokens.neutral[300];
+        return (
+          <Box
+            key={r.key}
+            component="button"
+            type="button"
+            role="radio"
+            aria-checked={on}
+            onClick={() => ws.setSelectedKey(r.key === FIELD_KEY ? FIELD_KEY : r.key)}
+            sx={{
+              all: "unset",
+              boxSizing: "border-box",
+              cursor: "pointer",
+              display: "grid",
+              gridTemplateColumns: "12px 1fr auto",
+              alignItems: "center",
+              gap: 1.25,
+              minHeight: 52,
+              px: 1.5,
+              py: 1,
+              borderRadius: `${radius.md}px`,
+              border: `1.5px solid ${on ? tokens.forest[600] : color.line}`,
+              bgcolor: on ? tokens.lime[200] : color.surfaceRaised,
+              "&:hover": { borderColor: tokens.forest[500] },
+              "&:focus-visible": { outline: `3px solid ${color.focus}`, outlineOffset: 2 },
+            }}
+          >
+            <Box sx={{ width: 12, height: 12, borderRadius: "3px", bgcolor: swatch, border: `1px solid rgba(0,0,0,.15)` }} aria-hidden="true" />
+            <Box sx={{ minWidth: 0 }}>
+              <Typography variant="subtitle2" noWrap component="span" sx={{ display: "block" }}>
+                {r.name}
+                {!r.saved && <Chip label={t("ws.pending")} size="small" sx={{ ml: 1, height: 20, fontSize: "0.7rem", bgcolor: tokens.lime[300], color: tokens.forest[950] }} />}
+              </Typography>
+              <Typography variant="caption" color="text.secondary" component="span" sx={{ display: "block" }} noWrap>
+                {crop ? `${ws.year}: ${crop.cropName}${crop.scope === "field" && r.key !== FIELD_KEY ? " (whole field)" : ""}` : last ? `${ws.year}: nothing · ${last.year}: ${last.crop.cropName}` : `${ws.year}: ${t("ws.noCrop")}`}
+              </Typography>
+            </Box>
+            <Typography variant="caption" sx={{ ...numeric, color: color.inkMuted }}>
+              {r.areaHa !== null ? `${r.areaHa.toFixed(2)} ha` : "—"}
+            </Typography>
+          </Box>
+        );
+      })}
+    </Box>
+  );
+}
+
+export function ZoneEditor({ ws }: { ws: WorkspaceState }) {
+  const t = useT();
+  const zone = ws.zones.find((z) => z.key === ws.selectedKey);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  if (!zone) return null;
+  return (
+    <Box sx={{ p: 1.5, borderRadius: `${radius.md}px`, bgcolor: color.surfaceSunken }}>
+      <Stack spacing={1.5}>
+        <TextField label="Zone name" size="small" value={zone.name} onChange={(e) => ws.editZone(zone.key, { name: e.target.value.slice(0, 120) })} error={!zone.name.trim()} helperText={!zone.name.trim() ? "Required" : undefined} />
+        <TextField select label="Why this zone differs" size="small" value={zone.basis} onChange={(e) => ws.editZone(zone.key, { basis: e.target.value as (typeof ZONE_BASES)[number] })}>
+          {ZONE_BASES.map((b) => (
+            <MenuItem key={b} value={b}>
+              {ZONE_BASIS_LABELS[b]}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField label="Notes" size="small" multiline minRows={2} value={zone.notes} onChange={(e) => ws.editZone(zone.key, { notes: e.target.value.slice(0, 2000) })} />
+        <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
+          <Button size="small" variant="outlined" startIcon={<EditOutlinedIcon />} onClick={() => ws.startDraw("zoneShape", zone.key)}>
+            Edit shape
+          </Button>
+          {confirmDelete === zone.key ? (
+            <>
+              <Button size="small" color="error" variant="contained" onClick={() => ws.deleteZone(zone.key)}>
+                Delete “{zone.name}”{zone.saved ? " on save" : ""}
+              </Button>
+              <Button size="small" onClick={() => setConfirmDelete(null)}>
+                {t("ws.cancel")}
+              </Button>
+            </>
+          ) : (
+            <Button size="small" color="error" onClick={() => setConfirmDelete(zone.key)}>
+              Delete zone
+            </Button>
+          )}
+        </Stack>
+        {zone.saved && confirmDelete === zone.key && (
+          <Typography variant="caption" sx={{ color: color.danger }}>
+            Saving will also delete crop history and soil records made for this zone.
+          </Typography>
+        )}
+      </Stack>
+    </Box>
+  );
+}
+
+/**
+ * Assign a crop to the selected zone or the whole field, with its planting and harvest dates, so the
+ * season is complete for the comparison (the same record "What you grew" makes). Saved with the map.
+ */
+export function CropAssign({ ws, historyHref }: { ws: WorkspaceState; historyHref: string | null }) {
+  const t = useT();
+  const key = ws.selectedKey && ws.selectedKey !== FIELD_KEY ? ws.selectedKey : null;
+  const [crop, setCrop] = useState("");
+  const [season, setSeason] = useState<Season>("main");
+  const [plantedOn, setPlantedOn] = useState("");
+  const [harvestedOn, setHarvestedOn] = useState("");
+  const [errors, setErrors] = useState<{ crop?: string; planted?: string; harvested?: string }>({});
+  // The form keeps its own year, so changing it never clears what is already typed.
+  // It follows the view's year when that changes elsewhere (timeline, chips).
+  const [formYear, setFormYear] = useState(ws.year);
+  const [seenYear, setSeenYear] = useState(ws.year);
+  if (ws.year !== seenYear) {
+    setSeenYear(ws.year);
+    setFormYear(ws.year);
+  }
+  const current = ws.cropFor(key, formYear);
+  const regionName = key ? ws.zoneName(key) : t("ws.wholeField");
+  const pendingHere = ws.crops.filter((c) => c.seasonYear === ws.year);
+  const recorded = cropYears(ws.history, ws.crops, key);
+  const seasonLabel = (s: string) => t(`app.rec.season.${s}` as MessageKey);
+
+  return (
+    <Box
+      component="form"
+      noValidate
+      onSubmit={(e) => {
+        e.preventDefault();
+        const name = crop.trim();
+        const next: typeof errors = {};
+        if (!name) next.crop = t("ws.cropErrName");
+        else if (name.length > 80) next.crop = t("ws.cropErrLong");
+        if (!plantedOn) next.planted = t("ws.dateRequired");
+        if (!harvestedOn) next.harvested = t("ws.dateRequired");
+        else if (plantedOn && harvestedOn < plantedOn) next.harvested = t("ws.harvestBefore");
+        setErrors(next);
+        if (Object.keys(next).length) return;
+        ws.assignCrop({ zoneKey: key, seasonYear: formYear, season, cropName: name, plantedOn, harvestedOn });
+        // Show the year just assigned, so the crop appears in 3D, the zone list and Inspect at once.
+        ws.setYear(formYear);
+        setCrop("");
+        setPlantedOn("");
+        setHarvestedOn("");
+      }}
+    >
+      <Typography variant="subtitle2" component="h3" sx={{ mb: 0.5 }}>
+        {t("ws.assignCrop")}: {regionName}, {formYear}
+      </Typography>
+      <Typography variant="caption" color="text.secondary" component="p" sx={{ mb: 1.5 }}>
+        {current ? fmt(t("ws.cropRecordedYear"), { crop: current.cropName, season: seasonLabel(current.season) }) : t("ws.cropNothingYear")}
+        {current?.pending ? ` · ${t("ws.cropNotSaved")}.` : ""} {t("ws.cropDatesWhy")}
+      </Typography>
+      {recorded.length > 0 && (
+        <Box sx={{ mb: 1.5 }}>
+          <Typography variant="caption" color="text.secondary" component="p" sx={{ mb: 0.5 }}>
+            {t("ws.cropsRecorded")}
+          </Typography>
+          <Stack direction="row" spacing={0.75} useFlexGap sx={{ flexWrap: "wrap" }}>
+            {recorded.map((r) => (
+              <Chip
+                key={r.year}
+                size="small"
+                clickable
+                onClick={() => ws.setYear(r.year)}
+                aria-pressed={r.year === ws.year}
+                label={`${r.year}: ${r.crop.cropName}${r.crop.pending ? " *" : ""}`}
+                sx={{ fontWeight: 600, bgcolor: r.year === ws.year ? tokens.forest[800] : tokens.neutral[150], color: r.year === ws.year ? tokens.neutral[0] : color.ink, "&:hover": { bgcolor: r.year === ws.year ? tokens.forest[700] : tokens.neutral[200] } }}
+              />
+            ))}
+          </Stack>
+        </Box>
+      )}
+      <Stack spacing={1.25}>
+        <Autocomplete
+          freeSolo
+          options={[...COMMON_CROPS]}
+          inputValue={crop}
+          onInputChange={(_, v) => setCrop(v)}
+          renderInput={(params) => <TextField {...params} label={t("ws.crop")} size="small" required error={Boolean(errors.crop)} helperText={errors.crop ?? t("ws.cropHint")} />}
+        />
+        <Stack direction="row" spacing={1}>
+          <TextField select size="small" label={t("ws.season")} value={season} onChange={(e) => setSeason(e.target.value as Season)} sx={{ flex: 1 }}>
+            {SEASONS.map((s) => (
+              <MenuItem key={s} value={s}>
+                {seasonLabel(s)}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField select size="small" label={t("ws.year")} value={formYear} onChange={(e) => setFormYear(Number(e.target.value))} sx={{ width: 120 }}>
+            {ws.years.map((y) => (
+              <MenuItem key={y} value={y}>
+                {y}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Stack>
+        <Stack direction={{ xs: "column", sm: "row", md: "column" }} spacing={1.25}>
+          <TextField
+            type="date"
+            size="small"
+            required
+            label={t("ws.plantedOn")}
+            value={plantedOn}
+            onChange={(e) => setPlantedOn(e.target.value)}
+            error={Boolean(errors.planted)}
+            helperText={errors.planted}
+            slotProps={{ inputLabel: { shrink: true } }}
+            fullWidth
+          />
+          <TextField
+            type="date"
+            size="small"
+            required
+            label={t("ws.harvestedOn")}
+            value={harvestedOn}
+            onChange={(e) => setHarvestedOn(e.target.value)}
+            error={Boolean(errors.harvested)}
+            helperText={errors.harvested}
+            slotProps={{ inputLabel: { shrink: true }, htmlInput: { min: plantedOn || undefined } }}
+            fullWidth
+          />
+        </Stack>
+        {key && (
+          <Typography variant="caption" color="text.secondary" component="p">
+            {t("ws.cropZoneNote")}
+          </Typography>
+        )}
+        <Button type="submit" variant="contained" startIcon={<AddRoundedIcon />}>
+          {t("ws.assignCrop")}
+        </Button>
+      </Stack>
+      {pendingHere.length > 0 && (
+        <Box component="ul" aria-label={t("ws.cropPendingList")} sx={{ listStyle: "none", p: 0, m: 0, mt: 1.5, display: "grid", gap: 0.5 }}>
+          {pendingHere.map((a) => (
+            <Box component="li" key={`${a.zoneKey}-${a.seasonYear}-${a.season}`} sx={{ display: "flex", alignItems: "center", gap: 1, pl: 1.25, py: 0.25, borderRadius: 1, bgcolor: tokens.lime[200] }}>
+              <Typography variant="body2" sx={{ flex: 1, minWidth: 0, overflowWrap: "anywhere" }}>
+                {ws.zoneName(a.zoneKey)} · {seasonLabel(a.season)}: <strong>{a.cropName}</strong>
+                <Box component="span" sx={{ display: "block", ...numeric, color: color.inkMuted, fontSize: "0.8rem" }}>
+                  {a.plantedOn} → {a.harvestedOn}
+                </Box>
+              </Typography>
+              <IconButton size="small" aria-label={fmt(t("ws.cropRemovePending"), { crop: a.cropName, zone: ws.zoneName(a.zoneKey) })} onClick={() => ws.removeAssignment(a)}>
+                <CloseRoundedIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          ))}
+        </Box>
+      )}
+      {historyHref && (
+        <Typography variant="caption" component="p" sx={{ mt: 1.5 }}>
+          <Link href={historyHref}>{t("ws.cropsMore")}</Link>
+        </Typography>
+      )}
+    </Box>
+  );
+}
+
+export function PanelSection({ title, children, action }: { title: string; children: React.ReactNode; action?: React.ReactNode }) {
+  return (
+    <Box component="section" aria-label={title}>
+      <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", mb: 1 }}>
+        <Typography variant="overline" component="h2" sx={{ color: color.leaf }}>
+          {title}
+        </Typography>
+        {action}
+      </Stack>
+      {children}
+    </Box>
+  );
+}
+
+export function PanelDivider() {
+  return <Divider sx={{ my: 2.5 }} />;
+}
+
+export function NoBoundaryHint() {
+  return <Alert severity="info">Draw the field boundary on the map to start. Zones and crops come after.</Alert>;
+}

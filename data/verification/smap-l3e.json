@@ -1,0 +1,43 @@
+{
+  "source": "smap-l3-enhanced",
+  "outcome": "implemented",
+  "checkedAt": "2026-11-06",
+  "auth": "NASA Earthdata bearer token (not recorded)",
+  "route": "CMR C2938664763-NSIDC_CPRD granules → opendap.earthdata.nasa.gov DAP4 CSV, rows/cols of the EASE-Grid 2.0 9 km cell",
+  "checks": [
+    {
+      "id": "ease2-grid",
+      "passed": true,
+      "detail": "Rajshahi (24.62, 88.56) → row 473, col 2876; Ames (42.03, -93.62) → row 267, col 925, matching the cells NSIDC files return"
+    },
+    {
+      "id": "files-read",
+      "passed": true,
+      "detail": "727/727 daily files read, 0 failed (2024-11-01 → 2026-10-31), 276 s through the worker"
+    },
+    {
+      "id": "has-retrievals",
+      "passed": true,
+      "detail": "533 days with a retrieval, 228 recommended"
+    },
+    {
+      "id": "range",
+      "passed": true,
+      "detail": "values within 0.02–0.5 m³/m³"
+    }
+  ],
+  "trace": {
+    "point": "Rajshahi test square 24.62, 88.56",
+    "monthlyRecommendedMean": {
+      "2025-01": 0.309,
+      "2025-02": 0.397,
+      "2025-04": 0.205,
+      "2025-06": 0.384,
+      "2026-01": 0.302,
+      "2026-02": 0.403,
+      "2026-06": 0.33,
+      "2026-10": 0.231
+    },
+    "note": "August–September have no recommended retrievals in either year (monsoon: water and dense vegetation in the cell)."
+  }
+}

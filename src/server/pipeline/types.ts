@@ -1,0 +1,80 @@
+import type { PipelineSource } from "@/domain/evidence/catalog";
+import type { EvidenceClass } from "@/domain/provenance/evidence";
+import type { Check } from "@/server/providers/http";
+
+/** One normalised aggregate row, ready for public.evidence_aggregates. */
+export type AggregateRow = {
+  variable: string;
+  unit: string;
+  aggregation: "sum" | "mean" | "min" | "max" | "count";
+  periodStart: string;
+  periodEnd: string;
+  value: number | null;
+  validCount: number;
+  expectedCount: number;
+  /** MODIS pixel id ("r3c4") for per-pixel values; "" for field-level values. */
+  pixel: string;
+};
+
+/** Everything needed to write one public.evidence_retrievals row (no raw data). */
+export type RetrievalRecord = {
+  sourceId: PipelineSource;
+  productId: string;
+  productVersion: string | null;
+  evidenceClass: Extract<EvidenceClass, "satellite_observation" | "assimilated_model_product" | "ground_measurement">;
+  spatialSupport: string;
+  request: Record<string, unknown>;
+  /** Earliest network fetch among the chunks used (a cached chunk keeps its original fetch time). */
+  retrievedAt: string;
+  responseSha256: string;
+  responseBytes: number;
+  outcome: "valid" | "partial" | "invalid" | "unavailable";
+  checks: Check[];
+  provenance: Record<string, unknown>;
+  cacheKey: string;
+  processingVersion: string;
+  observationStart: string | null;
+  observationEnd: string | null;
+};
+
+/** Normalised daily values for public.evidence_daily_series (engine inputs; not raw responses). */
+/** POWER variables, plus IMERG_FINAL_PRECIP / IMERG_LATE_PRECIP (NASA GPM IMERG daily rain, evidence-1.3.0) from their own retrieval. */
+export type DailySeriesRow = { variable: "T2M_MAX" | "T2M_MIN" | "PRECTOTCORR" | "T2MDEW" | "WS2M" | "ALLSKY_SFC_SW_DWN" | "IMERG_FINAL_PRECIP" | "IMERG_LATE_PRECIP"; unit: "°C" | "mm/day" | "m/s" | "MJ/m²/day"; startDate: string; values: (number | null)[] };
+
+export type PipelineOutput = { retrieval: RetrievalRecord; aggregates: AggregateRow[]; daily?: DailySeriesRow[] };
+
+export type Progress = (p: { step: string; done: number; total: number }) => Promise<void> | void;
+
+export type FieldContext = {
+  fieldId: string;
+  /** Interior point of the field (PostGIS st_pointonsurface), lon/lat. */
+  centroid: { lat: number; lon: number };
+  boundary: import("@/domain/geo/boundary").BoundaryGeometry;
+  countryCode: string | null;
+  /** NASA Earthdata bearer token for sources that need it (IMERG, SMAP); set by the worker from its environment, never stored or logged. */
+  earthdataToken?: string | null;
+};
+
+export class PipelineError extends Error {
+  constructor(
+    message: string,
+    /** "unavailable" = the provider could not be reached or refused; "invalid" = it answered with unusable content. */
+    readonly kind: "unavailable" | "invalid" | "not_applicable",
+  ) {
+    super(message);
+    this.name = "PipelineError";
+  }
+}
+
+/** Reads the failure kind without relying on instanceof (the worker and pipeline may load separate module copies). */
+export function pipelineErrorKind(e: unknown): "unavailable" | "invalid" | "not_applicable" | "internal" {
+  const k = (e as { name?: string; kind?: string } | null)?.kind;
+  return (e as { name?: string } | null)?.name === "PipelineError" && (k === "unavailable" || k === "invalid" || k === "not_applicable") ? k : "internal";
+}
+
+/** Job messages are shown to the farmer: no markup from provider error pages, bounded length. */
+export function userSafeMessage(message: string): string {
+  const cut = message.search(/<[!?a-zA-Z]/);
+  const text = (cut >= 0 ? `${message.slice(0, cut).trimEnd()} (provider error page omitted)` : message).replace(/\s+/g, " ").trim();
+  return text.length > 400 ? `${text.slice(0, 399)}…` : text;
+}

@@ -1,0 +1,70 @@
+# Runs the evidence + simulation worker on a schedule so the deployed site needs no always-on server.
+# Each run drains the queue (`--once`) and exits. Requires the repository secret SUPABASE_DB_URL.
+name: Evidence worker
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: evidence-worker
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  drain-queue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      # NASA Earthdata Login token for IMERG rain and SMAP (optional; those jobs fail as "unavailable" without it).
+      NASA_EARTHDATA_TOKEN: ${{ secrets.NASA_EARTHDATA_TOKEN }}
+      # Public project URL (also shipped in the browser bundle); used only to verify the project ref.
+      NEXT_PUBLIC_SUPABASE_URL: https://esavhptkepfkpbcwacwp.supabase.co
+    steps:
+      - name: Check secret
+        id: secret
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "SUPABASE_DB_URL repository secret is not set; skipping."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.secret.outputs.ok == 'true'
+      - uses: pnpm/action-setup@v4
+        if: steps.secret.outputs.ok == 'true'
+      - uses: actions/setup-node@v4
+        if: steps.secret.outputs.ok == 'true'
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install
+        if: steps.secret.outputs.ok == 'true'
+        run: pnpm install --frozen-lockfile
+      # Keep the raw-response chunk cache between runs: a job cut off by the timeout resumes from
+      # the chunks already downloaded instead of starting over (see src/server/pipeline/cache.ts).
+      - name: Restore download cache
+        if: steps.secret.outputs.ok == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/evidence
+          key: evidence-cache-${{ github.run_id }}
+          restore-keys: evidence-cache-
+      - name: Drain queue
+        if: steps.secret.outputs.ok == 'true'
+        # A dispatch means someone is using the site now: stay on for 15 idle minutes so their next
+        # jobs start within a second. The 10-minute schedule only drains the queue and exits.
+        run: pnpm evidence:worker --once ${{ github.event_name == 'workflow_dispatch' && '--idle-exit 900' || '' }}
+        # Stop the worker before the job limit so the cache-save step still runs.
+        timeout-minutes: 170
+      - name: Save download cache
+        if: always() && steps.secret.outputs.ok == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/evidence
+          key: evidence-cache-${{ github.run_id }}

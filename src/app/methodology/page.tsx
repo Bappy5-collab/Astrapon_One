@@ -1,0 +1,165 @@
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import type { Metadata } from "next";
+
+import { PageHeader, Section } from "@/components/farm/ui";
+import { TextLink } from "@/components/links";
+import { MAX_ABS_LATITUDE, MAX_FIELD_HA, MIN_FIELD_HA } from "@/domain/geo/boundary";
+import { MAX_SUPPORTED_EXTENT_M } from "@/domain/geo/local-frame";
+import { EVIDENCE_CLASSES, EVIDENCE_CLASS_INFO } from "@/domain/provenance/evidence";
+import { color, radius } from "@/theme/tokens";
+
+export const metadata: Metadata = { title: "Methodology", description: "How Astrapon handles evidence, field geometry, the 3D view, maps and search." };
+
+function P({ children }: { children: React.ReactNode }) {
+  return (
+    <Typography variant="body1" sx={{ mb: 1.5, maxWidth: 760 }}>
+      {children}
+    </Typography>
+  );
+}
+
+export default function MethodologyPage() {
+  return (
+    <Container maxWidth="md" sx={{ py: { xs: 4, md: 6 } }}>
+      <PageHeader crumbs={[]} title="Methodology">
+        <Typography color="text.secondary" sx={{ maxWidth: 720 }}>
+          What Astrapon does today, how, and what it refuses to pretend. This page changes as each part is built.
+        </Typography>
+      </PageHeader>
+
+      <Section id="evidence" title="Evidence classes">
+        <P>Every value carries one of these classes, and they are never mixed without saying so.</P>
+        <Box component="dl" sx={{ m: 0, display: "grid", gap: 1.25 }}>
+          {EVIDENCE_CLASSES.map((c) => (
+            <Box key={c} sx={{ p: 1.5, borderRadius: `${radius.md}px`, bgcolor: color.surfaceSunken }}>
+              <Typography component="dt" variant="subtitle2">
+                {EVIDENCE_CLASS_INFO[c].label}
+              </Typography>
+              <Typography component="dd" variant="body2" color="text.secondary" sx={{ m: 0 }}>
+                {EVIDENCE_CLASS_INFO[c].meaning}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      </Section>
+
+      <Section id="geometry" title="Field geometry">
+        <P>
+          Boundaries are stored as WGS84 longitude/latitude polygons (PostGIS MultiPolygon, EPSG:4326). Area is computed on the ellipsoid by the database, and checked in the
+          browser with a spherical formula before saving. A field must be between {MIN_FIELD_HA} and {MAX_FIELD_HA.toLocaleString("en")} ha, span at most {MAX_SUPPORTED_EXTENT_M / 1000} km, lie within ±
+          {MAX_ABS_LATITUDE}° latitude, and have no crossing edges. Cut-out areas (holes) must sit inside the outer edge without touching each other.
+        </P>
+        <P>
+          For the 3D view, degrees are never treated as metres. Each field gets its own local frame: positions are converted to Earth-centred coordinates and rotated into
+          east/north metres at the field&apos;s centre. Across {MAX_SUPPORTED_EXTENT_M / 1000} km the flat-plane error is a few centimetres. One uniform scale then fits the
+          field to the view, so shapes and proportions are preserved.
+        </P>
+        <P>
+          Fields that cross the 180° meridian are not supported yet and are rejected with an explanation; draw the parts on each side as separate fields. Fields next to the
+          meridian work, because longitudes are unwrapped around the field centre.
+        </P>
+        <P>
+          Planting zones must lie inside the field (1 m tolerance for digitising). If a new boundary would leave a zone outside, the save is refused unless that zone is also
+          adjusted or deleted in the same save. Zones come only from the farmer&apos;s knowledge or records, never from coarse satellite grids.
+        </P>
+      </Section>
+
+      <Section id="three-d" title="What the 3D view shows">
+        <P>
+          The terrain is flat. Astrapon does not invent slopes, buildings or trees. Elevation will only appear once a terrain source is retrieved and labelled.
+        </P>
+        <P>
+          Crops are original, stylised models chosen from the crop name you recorded (tall row crop, small grain, paddy, broadleaf, flowering oilseed, fibre, cover, fallow, or a
+          generic form for unknown names). They are drawn larger than life and at an illustrative density so they can be read at field scale; they are not a plant count. The
+          growth-stage control only changes the drawing. It is not observed and not predicted.
+        </P>
+        <P>
+          Everything in the 3D view is also available as text: the zone list, the year-by-zone timeline table, and the Inspect panel. Without WebGL, the map and those tables
+          still work.
+        </P>
+      </Section>
+
+      <Section id="maps" title="Maps, imagery and place search">
+        <P>
+          Street map tiles are © <TextLink href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</TextLink>, used under the OSM tile usage policy (attribution
+          shown on the map, no bulk or offline use). Satellite imagery is NASA&apos;s Harmonized Landsat Sentinel-2 (HLS) 30 m reflectance from{" "}
+          <TextLink href="https://www.earthdata.nasa.gov/eosdis/science-system-description/eosdis-components/gibs">NASA GIBS</TextLink>. HLS tiles exist only where a satellite passed
+          on the chosen date and may contain cloud; imagery is a drawing aid, not evidence used in any calculation.
+        </P>
+        <P>
+          Place search uses the public OpenStreetMap <TextLink href="https://operations.osmfoundation.org/policies/nominatim/">Nominatim</TextLink> service under its usage policy:
+          searches run only when you press Search (no autocomplete), all users share a 1-request-per-second limit through our server, results are cached, and only the text you
+          type is sent. Your device location is requested only when you press &quot;Use my location&quot;, is used in your browser to centre the map, and is not stored unless you
+          save a field there.
+        </P>
+      </Section>
+
+      <Section id="evidence-pipeline" title="Environmental evidence">
+        <P>
+          For a saved field, Astrapon fetches NASA POWER daily weather (model-derived, one ½° × ⅝° grid cell, 1981 onwards), MODIS MOD13Q1 greenness (satellite, ≈232 m pixels,
+          2000 onwards, good-quality composites only) and, in the United States, SSURGO soil water capacity. Downloads run in a separate background worker, never inside a web
+          request; each source can be refreshed, retried or cancelled, and a failed refresh keeps the earlier data, marked stale.
+        </P>
+        <P>
+          Missing days are never treated as zero or filled in. Monthly values need 90% of days, yearly counts 95%; normals use 1991–2020. Coarse sources are shown as one shared
+          value for the field; differences inside a field are shown only when at least two MODIS pixels lie mostly inside it. Indicators describe past conditions; they are not
+          crop damage, yield or forecasts, and NDVI cannot identify a crop. Saved snapshots pin the exact retrieval they used, so a later refresh never changes them.
+        </P>
+        <P>
+          Full rules are in <code>docs/evidence-methods.md</code> in the project repository.
+        </P>
+      </Section>
+
+      <Section id="simulation" title="Simulation and rotation comparison">
+        <P>
+          A run compares your existing rotation (from your dated crop history) with up to three agronomically distinct alternatives on the same past weather. Hard constraints
+          are applied first: crops you excluded or cannot sell, crops without a local planting window, overlapping plantings, the canola return interval, whole fallow years you
+          did not ask for, and your seasonal water allocation. Planting dates come only from your records, windows you enter, the USDA NASS 2010 calendar of the US state you choose, or the
+          FAO Crop Calendar of the agro-ecological zone you choose in 57 countries; no region&apos;s seasons are applied anywhere else.
+        </P>
+        <P>
+          Water use follows FAO-56: reference evapotranspiration from temperature (Hargreaves), crop coefficients and stage lengths from FAO-56 tables, and a daily root-zone
+          water balance when the soil water capacity is known (your soil test, or SSURGO in the US). Since engine 1.2.0 the soil water is continuous: what one crop leaves
+          in the soil carries over to the next, bare soil between crops dries by FAO-56 evaporation, and, when you choose how water soaks into your field, heavy rain
+          runs off by the USDA curve-number method. Without soil water capacity, only potential demand is shown. Paddy rice is reported as potential water use only.
+          Every run checks that water is conserved.
+        </P>
+        <P>
+          Your priorities weight the indicators. Scores are relative among the options shown, not probabilities. Sensitivity cases (dry soil at planting, FAO-56 coefficient
+          ranges, driest and wettest thirds of years) show whether a ranking is stable or fragile. Astrapon does not estimate yield, profit, soil carbon, nutrients, erosion,
+          pests or disease. A saved run pins its frozen inputs, reference data and evidence; a re-run gives a byte-identical result. Full method:{" "}
+          <code>docs/scientific-methodology.md</code>.
+        </P>
+      </Section>
+
+      <Section id="replay" title="Replay and explanations">
+        <P>
+          Each run stores a day-by-day replay of the options it compares over the most recent complete years of the replay window. The 3D view only steps through these stored
+          values: plant height follows the FAO-56 growth stage, the soil shade follows how much root-zone water is used up, and falling drops mark days with recorded rain. The
+          drawing is illustrative; the selected-date and monthly tables show the numbers. Changing the playback speed or the date never changes a result.
+        </P>
+        <P>
+          “Why this option?” and the plain-language summary are generated from the stored result. An optional AI draft, when the server has a key, receives only that result
+          (no names, notes, coordinates or account details), must cite the result&apos;s own sources, and any statement with a number that is not in the result is removed. It
+          cannot change a ranking. Saving a plan keeps it tied to the exact stored result, and the export contains the stored records, not a recalculation.
+        </P>
+      </Section>
+
+      <Section id="zones-runoff" title="Zones, carry-over, runoff and calendars (engine 1.2.0)">
+        <P>
+          Zones: every part of the field with its own seasons or its own soil test is compared separately on those records (shown under “By zone” on a result), with the
+          same weather, crops and priorities; zones without records of their own share the whole-field result. Carry-over: the soil water each crop leaves behind, after the
+          bare period and its evaporation, is where the next crop starts. Runoff: when you choose how water soaks in (hydrologic soil group A–D), daily runoff follows the
+          USDA NRCS curve numbers for your crop cover and for bare fallow; if you are not sure, no runoff is modelled and the result says so. Calendars: besides your own
+          dates and US state calendars, the FAO Crop Calendar gives sowing and harvest windows for agro-ecological zones in 57 countries, including Bangladesh.
+        </P>
+        <P>
+          Still outside the method: zone outlines do not change the weather (one coarse cell covers the field); runoff does not flow from one zone to another; the soil class
+          for evaporation is inferred from water capacity; and countries outside both calendars still need your own dates.
+        </P>
+      </Section>
+    </Container>
+  );
+}

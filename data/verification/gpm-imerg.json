@@ -1,0 +1,222 @@
+{
+  "artifact": "LIVE VERIFICATION RECORD — produced by scripts/verify-sources.mts. Not a fixture and not an input to the product.",
+  "sourceId": "gpm-imerg",
+  "generatedAt": "2026-11-12T21:04:36.477Z",
+  "site": {
+    "name": "Rajshahi test square, Bangladesh",
+    "latitude": 24.62,
+    "longitude": 88.56
+  },
+  "source": "gpm-imerg-daily",
+  "outcome": "implemented",
+  "checkedAt": "2026-11-12",
+  "auth": "NASA Earthdata bearer token (not recorded); NASA GESDISC DATA ARCHIVE application authorised on the account",
+  "route": "Harmony → Giovanni area-average time series (CSV) over box {\"south\":24.625,\"north\":24.675,\"west\":88.525,\"east\":88.575} inside cell imerg0.1:r1146c2685; one job per run",
+  "requests": [
+    {
+      "run": "late",
+      "collection": "C2723754859-GES_DISC",
+      "start": "1998-01-01",
+      "end": "2026-10-31",
+      "jobId": "ab90d77b-01e2-4e78-89f2-5113812b0a3e",
+      "seconds": 35,
+      "responseSha256": "186c018fb3f88e7879ab4c9678ff0738e0fd1a914b37871fa070f5c49721ed45"
+    },
+    {
+      "run": "final",
+      "collection": "C2723754864-GES_DISC",
+      "start": "1998-01-01",
+      "end": "2025-09-30",
+      "jobId": "26990f50-543c-4ec3-9e6c-68501fff5d23",
+      "seconds": 30,
+      "responseSha256": "ab7d5db9395346dcad266959d6e4a4a8239fc8ef49bedc0d7c5899f3dbd00834"
+    }
+  ],
+  "checks": [
+    {
+      "id": "final:record-end",
+      "passed": true,
+      "detail": "Final Run newest granule 2025-09-30"
+    },
+    {
+      "id": "late:variable",
+      "passed": true,
+      "detail": "column header \"time,mean_GPM_3IMERGDL_07_precipitation\""
+    },
+    {
+      "id": "late:location",
+      "passed": true,
+      "detail": "box 88.525, 24.625, 88.575, 24.675 inside cell imerg0.1:r1146c2685"
+    },
+    {
+      "id": "late:period",
+      "passed": true,
+      "detail": "1998-01-01T00:00:00.000Z → 2026-10-31T00:00:00.000Z"
+    },
+    {
+      "id": "late:days",
+      "passed": true,
+      "detail": "10531 of 10531 days, consecutive"
+    },
+    {
+      "id": "late:fill",
+      "passed": true,
+      "detail": "fill value -9999.900390625"
+    },
+    {
+      "id": "late:values",
+      "passed": true,
+      "detail": "0 missing, 0 negative, 0 above 2000 mm"
+    },
+    {
+      "id": "final:variable",
+      "passed": true,
+      "detail": "column header \"time,mean_GPM_3IMERGDF_07_precipitation\""
+    },
+    {
+      "id": "final:location",
+      "passed": true,
+      "detail": "box 88.525, 24.625, 88.575, 24.675 inside cell imerg0.1:r1146c2685"
+    },
+    {
+      "id": "final:period",
+      "passed": true,
+      "detail": "1998-01-01T00:00:00.000Z → 2025-09-30T00:00:00.000Z"
+    },
+    {
+      "id": "final:days",
+      "passed": true,
+      "detail": "10135 of 10135 days, consecutive"
+    },
+    {
+      "id": "final:fill",
+      "passed": true,
+      "detail": "fill value -9999.900390625"
+    },
+    {
+      "id": "final:values",
+      "passed": true,
+      "detail": "0 missing, 0 negative, 0 above 2000 mm"
+    },
+    {
+      "id": "same-as-opendap-cell",
+      "passed": true,
+      "detail": "late 2007-07-15: Harmony 3.17 mm, OPeNDAP cell [lon 2685, lat 1146] 3.175 mm; late 2017-06-12: Harmony 0.09 mm, OPeNDAP cell [lon 2685, lat 1146] 0.085 mm; late 2024-08-20: Harmony 0 mm, OPeNDAP cell [lon 2685, lat 1146] 0 mm; final 2007-07-15: Harmony 5.03 mm, OPeNDAP cell [lon 2685, lat 1146] 5.025 mm; final 2017-06-12: Harmony 0.2 mm, OPeNDAP cell [lon 2685, lat 1146] 0.195 mm; final 2024-08-20: Harmony 0.01 mm, OPeNDAP cell [lon 2685, lat 1146] 0.005 mm"
+    }
+  ],
+  "trace": {
+    "point": "Rajshahi test square, Bangladesh 24.62, 88.56",
+    "cell": {
+      "key": "imerg0.1:r1146c2685",
+      "centre": {
+        "lat": 24.65,
+        "lon": 88.55
+      }
+    },
+    "days": {
+      "late": 10531,
+      "final": 10135
+    },
+    "sampleDays": [
+      {
+        "run": "late",
+        "date": "2007-07-15",
+        "harmony": 3.17,
+        "opendap": 3.175
+      },
+      {
+        "run": "late",
+        "date": "2017-06-12",
+        "harmony": 0.09,
+        "opendap": 0.085
+      },
+      {
+        "run": "late",
+        "date": "2024-08-20",
+        "harmony": 0,
+        "opendap": 0
+      },
+      {
+        "run": "final",
+        "date": "2007-07-15",
+        "harmony": 5.03,
+        "opendap": 5.025
+      },
+      {
+        "run": "final",
+        "date": "2017-06-12",
+        "harmony": 0.2,
+        "opendap": 0.195
+      },
+      {
+        "run": "final",
+        "date": "2024-08-20",
+        "harmony": 0.01,
+        "opendap": 0.005
+      }
+    ],
+    "annualRainMm": [
+      {
+        "year": 2015,
+        "imergFinalMm": 1591,
+        "imergLateMm": 1593,
+        "powerMm": 1423
+      },
+      {
+        "year": 2016,
+        "imergFinalMm": 1374,
+        "imergLateMm": 1010,
+        "powerMm": 1571
+      },
+      {
+        "year": 2017,
+        "imergFinalMm": 1536,
+        "imergLateMm": 1438,
+        "powerMm": 2015
+      },
+      {
+        "year": 2018,
+        "imergFinalMm": 1107,
+        "imergLateMm": 1163,
+        "powerMm": 1469
+      },
+      {
+        "year": 2019,
+        "imergFinalMm": 1428,
+        "imergLateMm": 1848,
+        "powerMm": 1881
+      },
+      {
+        "year": 2020,
+        "imergFinalMm": 1587,
+        "imergLateMm": 1664,
+        "powerMm": 2079
+      },
+      {
+        "year": 2021,
+        "imergFinalMm": 1320,
+        "imergLateMm": 1376,
+        "powerMm": 1666
+      },
+      {
+        "year": 2022,
+        "imergFinalMm": 1100,
+        "imergLateMm": 1014,
+        "powerMm": 1320
+      },
+      {
+        "year": 2023,
+        "imergFinalMm": 1345,
+        "imergLateMm": 1181,
+        "powerMm": 1642
+      },
+      {
+        "year": 2024,
+        "imergFinalMm": 1407,
+        "imergLateMm": 893,
+        "powerMm": 1863
+      }
+    ],
+    "note": "IMERG days are UTC days; POWER days are local solar time. POWER is a ½° × ⅝° reanalysis cell, IMERG a 0.1° satellite cell. The Late Run is not gauge-calibrated; the engine uses the Final Run whenever it covers a run's replay window."
+  }
+}

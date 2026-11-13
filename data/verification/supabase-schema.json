@@ -1,0 +1,254 @@
+{
+  "_artifact": "Live schema verification of the Astrapon development Supabase project. Produced by scripts/db/verify.mts.",
+  "project": "esav…wp",
+  "verifiedAt": "2026-11-12T21:20:48.241Z",
+  "outcome": "verified",
+  "migrations": [
+    {
+      "file": "20261030130000_foundation.sql",
+      "sha256": "7801080b4f5ea2c483d2e558293baa07f148cde2005620551494c58fc96afc0e"
+    },
+    {
+      "file": "20261030130100_farm_records.sql",
+      "sha256": "fe279c2b2aa86fc1d155a21297eea79b2ecab822fca63d798b4a7676c14173de"
+    },
+    {
+      "file": "20261030130200_reference_data.sql",
+      "sha256": "a6cecce3f848fca6ca55071210eabde49ef3956c6e1806c5209af290f708e065"
+    },
+    {
+      "file": "20261030130300_evidence_and_simulation.sql",
+      "sha256": "99ca21dad3067674cd6e257d12d2af3ef87e0a135769c043adc959dbd4695dd1"
+    },
+    {
+      "file": "20261031100000_field_workspace.sql",
+      "sha256": "4b3df71316ce625d9e5474a77d01e285ad7ee39cdad7759f81240eb82e059da2"
+    },
+    {
+      "file": "20261031130000_evidence_pipeline.sql",
+      "sha256": "a600bfd2797617292df009fbb48ed399401d7c4a3e5af5776c4352b06e10971c"
+    },
+    {
+      "file": "20261031140000_evidence_pin_cascade.sql",
+      "sha256": "1a6c5bbd78e6d85ce7d6a2319bcf038961f9ae153c7c10534dd4274d62f1e077"
+    },
+    {
+      "file": "20261101100000_simulation_engine.sql",
+      "sha256": "7635898263ff02b6c5e0323430707265945f105bc578d16b2b343725aa2edb8c"
+    },
+    {
+      "file": "20261102100000_saved_plans.sql",
+      "sha256": "41e0ec0848536d7489556d42d7933ac314d7c0596cda637e60a77c826f28d2de"
+    },
+    {
+      "file": "20261105100000_water_energy_plans.sql",
+      "sha256": "17dad550877c5f997842b2ab509fbd8407731f661ae56af5ee590230dc28c8b9"
+    },
+    {
+      "file": "20261106100000_power_penman_monteith.sql",
+      "sha256": "cc80531c3e6ae7cf89957291dd107f2f72d3a581e755308d85439dd425fbe43a"
+    },
+    {
+      "file": "20261106110000_soilgrids_source.sql",
+      "sha256": "41725941ee423489ce25e0cd497d6cb81b95d1bac96ae1afd35525deaaf8f739"
+    },
+    {
+      "file": "20261106120000_smap_source.sql",
+      "sha256": "6cf34640455810b873d53caaf3129524efb57b7f1ddd07e2f3aa49f30b7426f6"
+    },
+    {
+      "file": "20261110100000_workspace_crop_dates.sql",
+      "sha256": "8833dbc4058282d6cbdea33d13e53e008d7827a5a4f98ef75351cf321ae80dd9"
+    },
+    {
+      "file": "20261113100000_imerg_rain_source.sql",
+      "sha256": "d88d61a34fffb02460598186d8846c997434959e2d7b5269c794988fddcb9a50"
+    }
+  ],
+  "referenceDatasets": [
+    {
+      "kind": "crop_calendar",
+      "name": "fao-crop-calendar",
+      "version": 1,
+      "status": "published",
+      "sha": "1f39e6685590da1d4b839576ebf3531ca7e49936af1c558e7d23b1af61d548d1",
+      "items": 3680
+    },
+    {
+      "kind": "crop_calendar",
+      "name": "usda-nass-usual-dates-2010",
+      "version": 1,
+      "status": "published",
+      "sha": "fe4c5c24f7f455e827a06825de4e0c0d5b48c582d4d261727448f72fc750c602",
+      "items": 271
+    },
+    {
+      "kind": "crop_parameters",
+      "name": "crop-parameters",
+      "version": 1,
+      "status": "retired",
+      "sha": "00110552d61d603923803823b3cbb678cb38b7186da5eda18bb0ae1f72f27fb7",
+      "items": 28
+    },
+    {
+      "kind": "crop_parameters",
+      "name": "crop-parameters",
+      "version": 2,
+      "status": "retired",
+      "sha": "45c9c3d2be5c1f859bf96850b939d73a22ac68937745ca437b04bfb83c38cef7",
+      "items": 28
+    },
+    {
+      "kind": "crop_parameters",
+      "name": "crop-parameters",
+      "version": 3,
+      "status": "retired",
+      "sha": "109f99986406cc455295d453e19fb1feb3df1369592bbe5eb8554d9470f6114b",
+      "items": 28
+    },
+    {
+      "kind": "crop_parameters",
+      "name": "crop-parameters",
+      "version": 4,
+      "status": "published",
+      "sha": "781fbdd5274b6d1119a9ffb0b1eaa0a8ac2562ba3d477126799a8c7f81107edf",
+      "items": 28
+    },
+    {
+      "kind": "data_source_registry",
+      "name": "fieldshift-data-sources",
+      "version": 1,
+      "status": "retired",
+      "sha": "5bca7b827a8854b10a836950edca48e1afd16bfc6cf14c344705d43b74a610da",
+      "items": 13
+    },
+    {
+      "kind": "data_source_registry",
+      "name": "fieldshift-data-sources",
+      "version": 2,
+      "status": "retired",
+      "sha": "56dfbdcc57bc4890522f637a4021b28ef4ead3253c583df96671602ce3a728a5",
+      "items": 13
+    },
+    {
+      "kind": "data_source_registry",
+      "name": "fieldshift-data-sources",
+      "version": 3,
+      "status": "retired",
+      "sha": "3288eabcd5392b5159e607219f8447105f64079f1cff3c6dcbd9684dd46e9734",
+      "items": 13
+    },
+    {
+      "kind": "data_source_registry",
+      "name": "fieldshift-data-sources",
+      "version": 4,
+      "status": "published",
+      "sha": "0f7f43865597071d9c22c417185c12f61e5ff16e829e57670eb071054568a654",
+      "items": 13
+    },
+    {
+      "kind": "reference_library",
+      "name": "agronomic-references",
+      "version": 1,
+      "status": "retired",
+      "sha": "4c9c210e8c97096d2876706de6571befcb72d7e349f73240d1add12f7a7f4005",
+      "items": 13
+    },
+    {
+      "kind": "reference_library",
+      "name": "agronomic-references",
+      "version": 2,
+      "status": "retired",
+      "sha": "4c7c291bb13394835785dace3a613bb2647be532ca5a16890d687f94c6dde2f9",
+      "items": 15
+    },
+    {
+      "kind": "reference_library",
+      "name": "agronomic-references",
+      "version": 3,
+      "status": "retired",
+      "sha": "eaf7df401dc75d53870443abdcb947f6821e678702b5fb2826361c4fa3313178",
+      "items": 16
+    },
+    {
+      "kind": "reference_library",
+      "name": "agronomic-references",
+      "version": 4,
+      "status": "published",
+      "sha": "27da58482ba9550d00a22075cd81d5973ccf23b4901af128eee098dd01910421",
+      "items": 22
+    }
+  ],
+  "checks": [
+    {
+      "name": "migrations: local == remote history",
+      "ok": true,
+      "detail": "15 recorded; missing []; changed []; extra []"
+    },
+    {
+      "name": "tables: exactly the expected set",
+      "ok": true,
+      "detail": "found 26: unexpected [], missing []"
+    },
+    {
+      "name": "RLS enabled on every public table",
+      "ok": true,
+      "detail": "26 tables"
+    },
+    {
+      "name": "anon has no privileges on user tables",
+      "ok": true,
+      "detail": "none"
+    },
+    {
+      "name": "reference tables are read-only for clients",
+      "ok": true,
+      "detail": "SELECT only"
+    },
+    {
+      "name": "results, evidence aggregates and daily series are server-written only",
+      "ok": true,
+      "detail": "SELECT only for users"
+    },
+    {
+      "name": "derived geometry columns are not client-writable",
+      "ok": true,
+      "detail": "trigger-maintained only"
+    },
+    {
+      "name": "user-table policies are authenticated + owner-scoped",
+      "ok": true,
+      "detail": "72 policies"
+    },
+    {
+      "name": "no write policies on reference tables",
+      "ok": true,
+      "detail": "none"
+    },
+    {
+      "name": "no SECURITY DEFINER functions in public",
+      "ok": true,
+      "detail": "none"
+    },
+    {
+      "name": "anon cannot execute Astrapon RPCs",
+      "ok": true,
+      "detail": "none"
+    },
+    {
+      "name": "PostGIS installed",
+      "ok": true,
+      "detail": "postgis 3.3.7"
+    },
+    {
+      "name": "reference datasets imported and published",
+      "ok": true,
+      "detail": "fao-crop-calendar v1 published (3680 items, 1f39e6685590); usda-nass-usual-dates-2010 v1 published (271 items, fe4c5c24f7f4); crop-parameters v1 retired (28 items, 00110552d61d); crop-parameters v2 retired (28 items, 45c9c3d2be5c); crop-parameters v3 retired (28 items, 109f99986406); crop-parameters v4 published (28 items, 781fbdd5274b); fieldshift-data-sources v1 retired (13 items, 5bca7b827a88); fieldshift-data-sources v2 retired (13 items, 56dfbdcc57bc); fieldshift-data-sources v3 retired (13 items, 3288eabcd539); fieldshift-data-sources v4 published (13 items, 0f7f43865597); agronomic-references v1 retired (13 items, 4c9c210e8c97); agronomic-references v2 retired (15 items, 4c7c291bb133); agronomic-references v3 retired (16 items, eaf7df401dc7); agronomic-references v4 published (22 items, 27da58482ba9)"
+    },
+    {
+      "name": "generated types match live schema",
+      "ok": true,
+      "detail": "src\\server\\database\\database.types.ts"
+    }
+  ]
+}
